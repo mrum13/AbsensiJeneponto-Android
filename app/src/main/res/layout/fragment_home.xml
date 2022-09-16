@@ -128,9 +128,10 @@
                     android:layout_weight="1"/>
 
                 <TextView
+                    android:id="@+id/tv_nama"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rum, S.Kom."
+                    android:text="-"
                     android:textColor="@color/black"
                     android:textSize="12sp"/>
 
@@ -151,15 +152,17 @@
                     android:layout_weight="1"/>
 
                 <TextView
+                    android:id="@+id/tv_nip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="19760905 199412 1 002"
+                    android:text="-"
                     android:textColor="@color/black"
                     android:textSize="12sp"/>
 
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -197,9 +200,10 @@
                     android:layout_weight="1"/>
 
                 <TextView
+                    android:id="@+id/tv_absen_masuk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tepat waktu"
+                    android:text="-"
                     android:textColor="@color/green"
                     android:textSize="12sp"/>
 
@@ -220,9 +224,10 @@
                     android:layout_weight="1"/>
 
                 <TextView
+                    android:id="@+id/tv_absen_pulang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Terlalu cepat"
+                    android:text="-"
                     android:textColor="@color/yellow"
                     android:textSize="12sp"/>
 

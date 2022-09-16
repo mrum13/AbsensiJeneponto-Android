@@ -3,15 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/drawable-v24/button_border_color_primary.xml" value="0.1395" />
         <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/drawable/button_primary.xml" value="0.1715" />
         <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/drawable/edit_text_app.xml" value="0.1715" />
         <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/drawable/ic_check.xml" value="0.1345" />
-        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_login.xml" value="0.1" />
-        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_main.xml" value="0.17962962962962964" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_attendance.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_attendance2.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_regist_face.xml" value="0.24895833333333334" />
         <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/activity_splash.xml" value="0.23229166666666667" />
-        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/fragment_account.xml" value="0.17962962962962964" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/fragment_account.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/fragment_attendance.xml" value="0.17962962962962964" />
-        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/fragment_home.xml" value="0.17962962962962964" />
+        <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/AbsensiJeneponto/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.17962962962962964" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19375" />
       </map>
