@@ -98,6 +98,8 @@ public class RegistFaceActivity extends AppCompatActivity {
     protected float IMAGE_STD = 128.0f;
     protected int OUTPUT_SIZE=192;
 
+    Button btnRegis;
+
     private TextView tvDescFaceDetect;
 
     protected Context context=RegistFaceActivity.this;
@@ -123,7 +125,9 @@ public class RegistFaceActivity extends AppCompatActivity {
         TextView tvNama = findViewById(R.id.tv_scan5);
 
         ImageView btnBack = findViewById(R.id.ic_back);
-        Button btnRegis = findViewById(R.id.btn_regis);
+        btnRegis = findViewById(R.id.btn_regis);
+
+        buttonCondition(false, "Arahkan wajah ke kamera");
 
         btnRegis.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,8 +302,8 @@ public class RegistFaceActivity extends AppCompatActivity {
                                                 //faces adalah variable untuk face detection
                                                 if(faces.size()!=0) {
 
-                                                    tvDescFaceDetect.setText("Wajah Terdeteksi");
-                                                    tvDescFaceDetect.setTextColor(getResources().getColor(R.color.blue));
+                                                    buttonCondition(true, "Daftar");
+
                                                     Face face = faces.get(0); //Get first face from detected faces
 
                                                     //mediaImage to Bitmap
@@ -333,8 +337,7 @@ public class RegistFaceActivity extends AppCompatActivity {
                                                 }
                                                 else
                                                 {
-                                                    tvDescFaceDetect.setText("Wajah tidak terdeteksi!");
-                                                    tvDescFaceDetect.setTextColor(getResources().getColor(R.color.red));
+                                                    buttonCondition(false, "Wajah tidak terdeteksi !");
                                                 }
 
                                             }
@@ -626,6 +629,17 @@ public class RegistFaceActivity extends AppCompatActivity {
             });
 
             builder.show();
+        }
+    }
+
+    void buttonCondition(boolean condition, String title) {
+        btnRegis.setEnabled(condition);
+        btnRegis.setText(title);
+
+        if (!condition) {
+            btnRegis.setTextColor(0xAA000000);
+        } else {
+            btnRegis.setTextColor(0xAAFFFFFF);
         }
     }
 }
