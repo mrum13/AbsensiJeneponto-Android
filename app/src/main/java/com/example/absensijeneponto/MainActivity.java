@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FloatingActionButton btnScan;
     BottomNavigationView bottomNavigationView;
     Intent myIntent;
+    String fromWhere;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
+        fromWhere = getIntent().getStringExtra("from_where");
 
         loadFragment(new HomeFragment());
 

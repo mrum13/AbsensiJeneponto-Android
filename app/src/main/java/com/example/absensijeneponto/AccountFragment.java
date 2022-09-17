@@ -57,17 +57,6 @@ public class AccountFragment extends Fragment {
                     tvNama.setText(data.get(0).getName());
                     tvJabatan.setText(data.get(0).getPegawai().getGolongan().getPangkat());
 
-                    try {
-                        if (data.get(0).getPegawai().getFace_character()==null) {
-                            Toast.makeText(getContext(), "Anda belum mendaftarkan wajah !", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Silahkan melakukan absensi", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                    }
-
-
                 } else {
                     try {
                         JSONObject jobjError = new JSONObject(response.errorBody().string());

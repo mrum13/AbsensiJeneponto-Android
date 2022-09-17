@@ -57,17 +57,20 @@
 
             <TextView
                 android:id="@+id/tv_keterangan_absen"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Anda belum absen !"
+                android:text="Loading..."
                 android:textSize="12sp"
+                android:layout_marginRight="16dp"
                 android:textFontWeight="600"
-                android:textColor="@color/red"
+                android:textColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@id/tv_absen_hari_ini"
                 android:layout_marginTop="14sp"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/photo"/>
 
             <Button
+                android:id="@+id/btn_absen_home"
                 android:textAllCaps="false"
                 android:layout_width="167dp"
                 android:layout_height="wrap_content"
@@ -80,6 +83,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <ImageView
+                android:id="@+id/photo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:src="@drawable/user_dashboard"

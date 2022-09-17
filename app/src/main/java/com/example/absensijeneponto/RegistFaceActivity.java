@@ -116,6 +116,8 @@ public class RegistFaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist_face);
 
+        token = Preferences.getToken(RegistFaceActivity.this);
+
         fromWhere = getIntent().getStringExtra("from_where");
 
         mApiInterface = RetrofitClient.getApi();
@@ -181,8 +183,6 @@ public class RegistFaceActivity extends AppCompatActivity {
 
     private void getUserData(){
 
-        token = Preferences.getToken(RegistFaceActivity.this);
-
         Call<List<GetUserResponse>> callGetUser= RetrofitClient.getApi().getUser("Bearer "+token);
         callGetUser.enqueue(new Callback<List<GetUserResponse>>() {
             @Override
@@ -209,11 +209,27 @@ public class RegistFaceActivity extends AppCompatActivity {
     }
 
     private void postFace(String faceId){
-        Toast.makeText(RegistFaceActivity.this, "API Regist Face belum tersedia. Mohon bersabar, ini ujian :v", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(RegistFaceActivity.this, MainActivity.class));
 
+        Call<Object> call= RetrofitClient.getApi().updateFace("Bearer "+token, faceId);
 
-//        Call<PostFaceResponse> call= RetrofitClient.getApi().postFace("Bearer "+token, faceId);
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.code()==200) {
+                    Toast.makeText(RegistFaceActivity.this, "Wajah berhasil didaftarkan", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(RegistFaceActivity.this, MainActivity.class);
+                    intent.putExtra("from_where", "fromLogin");
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(RegistFaceActivity.this, "Gagal menyimpan wajah", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Toast.makeText(RegistFaceActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 //
 //        call.enqueue(new Callback<PostFaceResponse>() {
 //            @Override
@@ -639,7 +655,7 @@ public class RegistFaceActivity extends AppCompatActivity {
         if (!condition) {
             btnRegis.setTextColor(0xAA000000);
         } else {
-            btnRegis.setTextColor(0xAAFFFFFF);
+            btnRegis.setTextColor(0xffFFFFFF);
         }
     }
 }

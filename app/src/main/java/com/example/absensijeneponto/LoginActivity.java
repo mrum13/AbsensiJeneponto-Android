@@ -69,8 +69,9 @@ public class LoginActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 Preferences.setToken(getApplicationContext(),loginResponse.getToken());
                                 Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
+
+                                checkFaceData();
 
                                 buttonFinishedLoading();
 
@@ -110,28 +111,39 @@ public class LoginActivity extends AppCompatActivity {
         circularProgressIndicator.setVisibility(View.GONE);
     }
 
-//    boolean checkFaceData() {
-//        String token = Preferences.getToken(getApplicationContext());
-//        Call<List<GetUserResponse>> call= RetrofitClient.getApi().getUser(token);
-//
-//        call.enqueue(new Callback<GetUserResponse>() {
-//            @Override
-//            public void onResponse(Call<GetUserResponse> call, Response<GetUserResponse> response) {
-//                if (response.isSuccessful()) {
-//                    GetUserResponse getUserResponse = response.body();
-//
-//
-//                } else {
-//                    Toast.makeText(LoginActivity.this, "Gagal GET User !", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<GetUserResponse> call, Throwable t) {
-//                Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        return false;
-//    }
+    void checkFaceData() {
+        String token = Preferences.getToken(getApplicationContext());
+        Call<List<GetUserResponse>> call= RetrofitClient.getApi().getUser("Bearer "+token);
+
+        call.enqueue(new Callback<List<GetUserResponse>>() {
+            @Override
+            public void onResponse(Call<List<GetUserResponse>> call, Response<List<GetUserResponse>> response) {
+                List<GetUserResponse> getUserResponse = response.body();
+
+                if (response.isSuccessful()) {
+                    if (getUserResponse.get(0).getPegawai().getFace_character()==null || getUserResponse.get(0).getPegawai().getFace_character().equals("null")) {
+                        intent = new Intent(LoginActivity.this, RegistFaceActivity.class);
+                    } else {
+                        intent = new Intent(LoginActivity.this, MainActivity.class);
+                    }
+
+                    intent.putExtra("from_where", "fromLogin");
+                    startActivity(intent);
+                    finish();
+                } else {
+                    try {
+                        JSONObject jobjError = new JSONObject(response.errorBody().string());
+                        Toast.makeText(LoginActivity.this, jobjError.getString("message"), Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetUserResponse>> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

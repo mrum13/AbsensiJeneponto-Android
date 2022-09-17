@@ -19,10 +19,23 @@ public class Preferences {
         editor.putString("TOKEN", token);
         editor.apply();
     }
-    /** Mengembalikan nilai dari key KEY_USER_TEREGISTER berupa String */
+
     public static String getToken(Context context){
         return getSharedPreference(context).getString("TOKEN","");
     }
+
+    /** Mengembalikan nilai dari key KEY_USER_TEREGISTER berupa String */
+    public static String getWaktuMasuk(Context context){
+        return getSharedPreference(context).getString("WAKTUMASUK","");
+    }
+
+    public static void setWaktuMasuk(Context context, String waktuMasuk){
+        SharedPreferences.Editor editor = getSharedPreference(context).edit();
+        editor.putString("WAKTUMASUK", waktuMasuk);
+        editor.apply();
+    }
+    /** Mengembalikan nilai dari key KEY_USER_TEREGISTER berupa String */
+
 
     /** Deklarasi Edit Preferences dan mengubah data
      *  yang memiliki key isi KEY_USER_TEREGISTER dengan parameter username */
