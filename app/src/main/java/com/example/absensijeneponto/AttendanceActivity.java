@@ -33,7 +33,7 @@ public class AttendanceActivity extends AppCompatActivity {
     private ImageView imgBack;
     private Intent intent;
     private Button btnMasuk, btnPulang;
-    private Date currentTime,timeIn,lateTimeIn,earlyTimeOut, timeOut;
+    private Date currentTimeDate, currentTime,timeIn,lateTimeIn,earlyTimeOut, timeOut;
     private String token, statusAbsenMasuk, statusAbsenPulang;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -51,7 +51,7 @@ public class AttendanceActivity extends AppCompatActivity {
         disableBTNMasuk();
         disableBTNPulang();
 
-        getStatusAbsen();
+//        getStatusAbsen();
 
 
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +62,7 @@ public class AttendanceActivity extends AppCompatActivity {
         });
 
         //NOTED: ONLY DEBUG CODE BELOW
-//        enableBTNMasuk();
+        enableBTNMasuk();
 //        enableBTNPulang();
 
         btnMasuk.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +125,7 @@ public class AttendanceActivity extends AppCompatActivity {
         jamPulang.set(Calendar.SECOND,0);
 
         currentTime = Calendar.getInstance().getTime();
+
 
         if (currentTime.before(jamMasuk.getTime())) {
             disableBTNMasuk();

@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +28,10 @@ import retrofit2.Response;
 
 public class AttendanceActivity2 extends AppCompatActivity {
     private ImageView imgBack;
-    private String header, keteranganAbsen, idJenisAbsen, idUser, token, namaPegawai, waktuAbsenMasuk, waktuAbsenPulang;
+    private String header, keteranganAbsen, idJenisAbsen, idUser, token, namaPegawai, waktuAbsenMasuk, waktuAbsenPulang, statusMasuk, statusPulang;
     private TextView tvHeader, timeDesc;
     private Date currentTime;
-    private Date currentTimeDebug;
+    private Calendar currentTimeDebug;
     private Date cTime;
     private Date tm1;
     private Date tm2;
@@ -54,6 +56,10 @@ public class AttendanceActivity2 extends AppCompatActivity {
     private Calendar outLateEarly3;
     private Calendar outLateLast3;
 
+    private Button btnAbsen;
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +73,33 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
         circularProgressIndicator.setVisibility(View.GONE);
 
+        //default value radio
+        int selectedID = radioGroup.getCheckedRadioButtonId();
+        radioButton = (RadioButton) findViewById(selectedID);
+        if (radioButton.getText().equals("Hadir")){
+            idJenisAbsen = "3";
+            keteranganAbsen = "Hadir - hadir";
+        }
+
         getUser();
         getTimeFunction();
-
+        getWaktuMasukdanKeluar();
         getAllData();
+
+
+
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(AttendanceActivity2.this, AttendanceActivity.class));
+            }
+        });
+
+        btnAbsen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getAllData();
             }
         });
     }
@@ -86,6 +110,8 @@ public class AttendanceActivity2 extends AppCompatActivity {
         timeDesc = findViewById(R.id.tv_time_attendance);
         imgTime = findViewById(R.id.img_check_time);
         circularProgressIndicator = findViewById(R.id.circular_progress);
+        btnAbsen = findViewById(R.id.btn_attendance);
+        radioGroup = findViewById(R.id.radio_group1);
     }
 
     public void onRadioButtonClicked(View view) {
@@ -132,11 +158,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<GetUserResponse> data = response.body();
 
-                    try {
-                        getUserIDName(data.get(0).getPegawai().getUserId(), data.get(0).getName());
-                    } catch (Exception e) {
-                        Toast.makeText(AttendanceActivity2.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    }
+                    getUserIDName(data.get(0).getPegawai().getUserId(), data.get(0).getName());
                 }
             }
 
@@ -173,12 +195,12 @@ public class AttendanceActivity2 extends AppCompatActivity {
         outLateLast3 = Calendar.getInstance();
 
         cTime = new Date();
-        Calendar currentTimeDebug =  Calendar.getInstance();
+        currentTimeDebug =  Calendar.getInstance();
         //NOTED: ACTIVATED ONLY ON DEBUG MODE CODE BELOW to set time
-//        currentTimeDebug.setTime(cTime);
-//        currentTimeDebug.set(Calendar.HOUR_OF_DAY, 16);
-//        currentTimeDebug.set(Calendar.MINUTE,0);
-//        currentTimeDebug.set(Calendar.SECOND,0);
+        currentTimeDebug.setTime(cTime);
+        currentTimeDebug.set(Calendar.HOUR_OF_DAY, 8);
+        currentTimeDebug.set(Calendar.MINUTE,0);
+        currentTimeDebug.set(Calendar.SECOND,0);
 
         batasAbsenMasuk();
         batasAbsenPulang();
@@ -217,38 +239,34 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
     void getWaktuMasukdanKeluar(){
         if (tvHeader.getText().equals("Absen Masuk")) {
-            waktuAbsenMasuk = "00:00";
             waktuAbsenPulang = "00:00";
+            statusMasuk = "1";
+            statusPulang = "0";
         } else if (tvHeader.getText().equals("Absen Pulang")) {
             waktuAbsenMasuk = Preferences.getWaktuMasuk(AttendanceActivity2.this);
-
-
+            waktuAbsenPulang = currentTimeDebug.getTime().toString();
+            statusMasuk = "1";
+            statusPulang = "1";
         }
     }
 
     void getAllData() {
+        //YG BELUM
 
         //periode (November-2022)
-
         //tangal absen (2022-11-12)
-
         //face
-
         //locationAuth
 
-        //id jenis absen ADA
+        String getIdJenisAbsen, getKeteranganAbsen, getPegawaiId, getWaktuMasuk, getWaktuPulang, getStatusMasuk, getStatusKeluar;
 
-        //pegawaiId ADA
-
-        //waktumasuk ADA
-
-        //waktukeluar ADA
-
-        //keteranganAbsen ADA
-
-        //statusMasuk ADA
-
-        //statusKeluar ADA
+        getIdJenisAbsen = idJenisAbsen;
+        getKeteranganAbsen = keteranganAbsen;
+        getPegawaiId = idUser;
+        getWaktuMasuk = currentTimeDebug.getTime().toString();
+        getWaktuPulang = waktuAbsenPulang;
+        getStatusMasuk = statusMasuk;
+        getStatusKeluar = statusPulang;
 
 
     }
