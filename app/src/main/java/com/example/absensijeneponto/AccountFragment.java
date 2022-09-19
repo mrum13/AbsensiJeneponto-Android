@@ -27,7 +27,7 @@ public class AccountFragment extends Fragment {
 
     TextView tvNama, tvJabatan;
     String token;
-    ConstraintLayout lytRegistFace;
+    ConstraintLayout lytRegistFace, lytReport;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +44,14 @@ public class AccountFragment extends Fragment {
                 Intent registFaceActivity = new Intent(getContext(), RegistFaceActivity.class);
                 registFaceActivity.putExtra("from_where", "fromAccount");
                 startActivity(registFaceActivity);
+            }
+        });
+
+        lytReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent reportActivity = new Intent(getContext(), ReportActivity.class);
+                startActivity(reportActivity);
             }
         });
 
@@ -82,5 +90,6 @@ public class AccountFragment extends Fragment {
         tvNama = view.findViewById(R.id.tv_nama_pegawai_account);
         tvJabatan = view.findViewById(R.id.tv_jabatan_pegawai_account);
         lytRegistFace = view.findViewById(R.id.layout_option_account2);
+        lytReport = view.findViewById(R.id.layout_option_account4);
     }
 }
