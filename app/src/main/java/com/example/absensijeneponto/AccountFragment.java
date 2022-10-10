@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class AccountFragment extends Fragment {
     TextView tvNama, tvJabatan;
     String token;
     ConstraintLayout lytRegistFace, lytReport;
+    Button btnLogout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +39,13 @@ public class AccountFragment extends Fragment {
         initComponent(view);
 
         token = Preferences.getToken(getContext());
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), LoginActivity.class));
+            }
+        });
 
         lytRegistFace.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,5 +100,6 @@ public class AccountFragment extends Fragment {
         tvJabatan = view.findViewById(R.id.tv_jabatan_pegawai_account);
         lytRegistFace = view.findViewById(R.id.layout_option_account2);
         lytReport = view.findViewById(R.id.layout_option_account4);
+        btnLogout = view.findViewById(R.id.btn_logout);
     }
 }

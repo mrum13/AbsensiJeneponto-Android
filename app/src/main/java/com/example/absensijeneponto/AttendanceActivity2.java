@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.YuvImage;
@@ -58,6 +59,7 @@ import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
+import com.google.mlkit.vision.face.FaceLandmark;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -74,6 +76,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -87,7 +90,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
     private String header, keteranganAbsen, idJenisAbsen, idUser, token, namaPegawai, waktuAbsenMasuk, waktuAbsenPulang, statusMasuk, statusPulang;
     private TextView tvHeader, timeDesc, tvLocationAttendance, tvNamePegawaiAttendance;
     private Date currentTime;
-    private Calendar currentTimeDebug;
+    private Calendar currentTimeDebug, currentTimeDebugMasuk;
     private Date cTime;
     private Date tm1;
     private Date tm2;
@@ -95,7 +98,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
     private Date pc3;
     private Date pc2;
     private Date pc1;
-    private ImageView imgTime, imgCheckName, imgBack, imgCheckLocation;
+    private ImageView imgTime, imgCheckName, imgBack, imgCheckLocation, imgCheckKiri, imgCheckKanan;
     private CircularProgressIndicator circularProgressIndicator;
 
     private Calendar inLateEarly1;
@@ -120,6 +123,8 @@ public class AttendanceActivity2 extends AppCompatActivity {
     private String latUser, longUser;
     private String latApi, longApi, namaLokasiKerja, latApelApi, longApelApi;
 
+    SimpleDateFormat periodeFormat, tanggalFormat, waktuAbsenFormat;
+
     //module face recognition
     private Interpreter tfLite;
     private String modelFile="mobile_face_net.tflite";
@@ -141,6 +146,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
     boolean start=true,flipX=false;
     private String nameUser;
     private String faceChar;
+    private boolean kiri = false, kanan = false;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -153,6 +159,16 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
         header = getIntent().getStringExtra("key_header");
         tvHeader.setText(header);
+
+        String patternPeriode, patternTanggal, patternWaktuAbsen;
+
+        patternPeriode = "MMMM-yyyy";
+        patternTanggal = "yyyy-MM-dd";
+        patternWaktuAbsen = "HH:mm";
+
+        periodeFormat = new SimpleDateFormat(patternPeriode);
+        tanggalFormat = new SimpleDateFormat(patternTanggal);
+        waktuAbsenFormat = new SimpleDateFormat(patternWaktuAbsen);
 
         disableButton();
 
@@ -199,6 +215,8 @@ public class AttendanceActivity2 extends AppCompatActivity {
         radioGroup = findViewById(R.id.radio_group1);
         tvNamePegawaiAttendance = findViewById(R.id.tv_name_pegawai_attendance);
         imgCheckName = findViewById(R.id.img_check_name);
+        imgCheckKiri = findViewById(R.id.img_check_kiri);
+        imgCheckKanan = findViewById(R.id.img_check_kanan);
 
         previewViewAttendance=findViewById(R.id.camera_selfie);
     }
@@ -414,12 +432,14 @@ public class AttendanceActivity2 extends AppCompatActivity {
                 {
                     tvNamePegawaiAttendance.setText(namaPegawai);
                     imgCheckName.setImageResource(R.drawable.ic_check);
-                    if(idJenisAbsen.equals("3") || idJenisAbsen.equals("8") || idJenisAbsen.equals("7") && tvLocationAttendance.getText().equals("Anda telah di area kerja")) {
+                    if((idJenisAbsen.equals("3") || idJenisAbsen.equals("8") || idJenisAbsen.equals("7")) && (tvLocationAttendance.getText().equals("Anda telah di area kerja")) && (kiri==true) && (kanan==true)) {
                         enableButton();
-                    } else if(tvLocationAttendance.getText().equals("Anda telah di area kerja") && idJenisAbsen.equals("10") || idJenisAbsen.equals("5")) {
+                    } else if((tvLocationAttendance.getText().equals("Anda telah di area kerja")) && (idJenisAbsen.equals("10") || idJenisAbsen.equals("5"))) {
                         disableButton();
-                    } else if(tvLocationAttendance.getText().equals("Anda di luar area kerja") && idJenisAbsen.equals("10") || idJenisAbsen.equals("5")) {
+                    } else if((tvLocationAttendance.getText().equals("Anda di luar area kerja")) && (idJenisAbsen.equals("10") || idJenisAbsen.equals("5"))) {
                         enableButton();
+                    } else if((tvLocationAttendance.getText().equals("Anda di luar area kerja")) && (idJenisAbsen.equals("3") || idJenisAbsen.equals("8") || idJenisAbsen.equals("7"))) {
+                        disableButton();
                     } else {
                         imgCheckName.setImageResource(R.drawable.ic_failed);
                         tvNamePegawaiAttendance.setText(namaPegawai);
@@ -570,6 +590,32 @@ public class AttendanceActivity2 extends AppCompatActivity {
                                                     //Get bounding box of face
                                                     RectF boundingBox = new RectF(face.getBoundingBox());
 
+                                                    float rotY = face.getHeadEulerAngleY();
+
+                                                    if (rotY>=50.0) {
+                                                        kiri=true;
+                                                    }
+                                                    if (rotY<=-50.0) {
+                                                        kanan=true;
+                                                    }
+
+                                                    if (kiri==true) {
+                                                        imgCheckKiri.setImageResource(R.drawable.ic_check);
+                                                    } else {
+                                                        imgCheckKiri.setImageResource(R.drawable.ic_failed);
+                                                    }
+
+                                                    if (kanan==true) {
+                                                        imgCheckKanan.setImageResource(R.drawable.ic_check);
+                                                    } else {
+                                                        imgCheckKanan.setImageResource(R.drawable.ic_failed);
+                                                    }
+
+                                                    FaceLandmark leftEar = face.getLandmark(FaceLandmark.LEFT_EAR);
+                                                    if (leftEar != null) {
+                                                        PointF leftEarPos = leftEar.getPosition();
+                                                    }
+
                                                     //Crop out bounding box from whole Bitmap(image)
                                                     Bitmap cropped_face = getCropBitmapByCPU(frame_bmp1, boundingBox);
 
@@ -636,6 +682,10 @@ public class AttendanceActivity2 extends AppCompatActivity {
         FaceDetectorOptions highAccuracyOpts =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                        .enableTracking()
+                        .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
                         .build();
         detector = FaceDetection.getClient(highAccuracyOpts);
 
@@ -805,9 +855,16 @@ public class AttendanceActivity2 extends AppCompatActivity {
         currentTimeDebug =  Calendar.getInstance();
         //NOTED: ACTIVATED ONLY ON DEBUG MODE CODE BELOW to set time
         currentTimeDebug.setTime(cTime);
-        currentTimeDebug.set(Calendar.HOUR_OF_DAY, 8);
-        currentTimeDebug.set(Calendar.MINUTE,0);
+        currentTimeDebug.set(Calendar.HOUR_OF_DAY, 16);
+        currentTimeDebug.set(Calendar.MINUTE,30);
         currentTimeDebug.set(Calendar.SECOND,0);
+
+        currentTimeDebugMasuk =  Calendar.getInstance();
+        //NOTED: ACTIVATED ONLY ON DEBUG MODE CODE BELOW to set time
+        currentTimeDebugMasuk.setTime(cTime);
+        currentTimeDebugMasuk.set(Calendar.HOUR_OF_DAY, 7);
+        currentTimeDebugMasuk.set(Calendar.MINUTE,30);
+        currentTimeDebugMasuk.set(Calendar.SECOND,0);
 
         batasAbsenMasuk();
         batasAbsenPulang();
@@ -841,12 +898,13 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
     void getWaktuMasukdanKeluar(){
         if (tvHeader.getText().equals("Absen Masuk")) {
+            waktuAbsenMasuk = waktuAbsenFormat.format(currentTimeDebugMasuk.getTime());
             waktuAbsenPulang = "00:00";
             statusMasuk = "1";
             statusPulang = "0";
         } else if (tvHeader.getText().equals("Absen Pulang")) {
             waktuAbsenMasuk = Preferences.getWaktuMasuk(AttendanceActivity2.this);
-            waktuAbsenPulang = currentTimeDebug.getTime().toString();
+            waktuAbsenPulang = waktuAbsenFormat.format(currentTimeDebug.getTime());
             statusMasuk = "1";
             statusPulang = "1";
         }
@@ -856,22 +914,14 @@ public class AttendanceActivity2 extends AppCompatActivity {
         showCircularProgress();
 
         String getPeriodeAbsen, getTanggalAbsen, getIdJenisAbsen, getKeteranganAbsen, getPegawaiId, getWaktuMasuk, getWaktuPulang, getFaceUser, getStatusMasuk, getStatusKeluar;
-        String patternPeriode, patternTanggal, patternWaktuAbsen;
 
-        patternPeriode = "MMMM-yyyy";
-        patternTanggal = "yyyy-MM-dd";
-        patternWaktuAbsen = "HH:mm";
 
-        SimpleDateFormat periodeFormat = new SimpleDateFormat(patternPeriode);
-        SimpleDateFormat tanggalFormat = new SimpleDateFormat(patternTanggal);
-        SimpleDateFormat waktuAbsenFormat = new SimpleDateFormat(patternWaktuAbsen);
-
-        getPeriodeAbsen = periodeFormat.format(new Date());
+        getPeriodeAbsen = periodeFormat.format(new Date()).toLowerCase(Locale.ROOT);
         getTanggalAbsen = tanggalFormat.format(new Date());
         getIdJenisAbsen = idJenisAbsen;
         getKeteranganAbsen = keteranganAbsen;
         getPegawaiId = idUser;
-        getWaktuMasuk = waktuAbsenFormat.format(currentTimeDebug.getTime());
+        getWaktuMasuk = waktuAbsenMasuk;
         getWaktuPulang = waktuAbsenPulang;
         getStatusMasuk = statusMasuk;
         getStatusKeluar = statusPulang;
@@ -888,7 +938,11 @@ public class AttendanceActivity2 extends AppCompatActivity {
         call.enqueue(new Callback<List<GetAbsenResponse>>() {
             @Override
             public void onResponse(Call<List<GetAbsenResponse>> call, Response<List<GetAbsenResponse>> response) {
+
                 if(response.isSuccessful()) {
+
+                    updateStatusAbsenPegawai();
+
                     hideCircularProgress();
                     List<GetAbsenResponse> data = response.body();
 
@@ -905,6 +959,22 @@ public class AttendanceActivity2 extends AppCompatActivity {
             public void onFailure(Call<List<GetAbsenResponse>> call, Throwable t) {
                 hideCircularProgress();
                 Toast.makeText(AttendanceActivity2.this, "Gagal Absen karena"+t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    void updateStatusAbsenPegawai() {
+        Call<List<Object>> updateAbsen= RetrofitClient.getApi().updateStatusAbsen("Bearer "+token, statusMasuk, statusPulang);
+
+        updateAbsen.enqueue(new Callback<List<Object>>() {
+            @Override
+            public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Object>> call, Throwable t) {
+                Toast.makeText(AttendanceActivity2.this, t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

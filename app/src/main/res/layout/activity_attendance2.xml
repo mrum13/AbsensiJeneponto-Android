@@ -60,12 +60,112 @@
 
             </FrameLayout>
 
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textSize="24sp"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:text="arah kepala"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                app:layout_constraintRight_toRightOf="parent"-->
+<!--                android:id="@+id/tv_arah_kepala"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/layout_camera"/>-->
+
+            <LinearLayout
+                android:id="@+id/card_kiri"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/layout_camera"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="22dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/card_identity_scan"
+                    android:paddingHorizontal="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_people"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/ic_people_kiri"/>
+
+                    <TextView
+                        android:id="@+id/tv_kiri"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toEndOf="@id/ic_people_kiri"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Validasi wajah menghadap kiri"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/img_check_kiri"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/card_kanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/card_kiri"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="22dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/card_identity_scan"
+                    android:paddingHorizontal="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_people"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/ic_people_kanan"/>
+
+                    <TextView
+                        android:id="@+id/tv_kanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_toEndOf="@id/ic_people_kanan"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Validasi wajah menghadap kanan"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/img_check_kanan"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/card_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/layout_camera"
-                android:layout_marginTop="18dp"
+                app:layout_constraintTop_toBottomOf="@id/card_kanan"
+                android:layout_marginTop="8dp"
                 android:layout_marginHorizontal="22dp">
 
                 <RelativeLayout

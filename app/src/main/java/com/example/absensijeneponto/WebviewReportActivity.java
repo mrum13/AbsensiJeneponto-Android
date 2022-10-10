@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,6 +57,7 @@ public class WebviewReportActivity extends AppCompatActivity {
             Toast.makeText(this, "Gagal get data Tanggal atau Id User", Toast.LENGTH_SHORT).show();
         } else {
             circularProgressIndicator.setVisibility(View.GONE);
+
             webView.loadUrl("https://www.absensi-dinkes.my.id/absensi/detail/start="+firstDate+"/end="+lastDate+"/user_id="+idUser);
         }
 

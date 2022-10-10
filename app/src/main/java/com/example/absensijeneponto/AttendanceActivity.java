@@ -48,6 +48,8 @@ public class AttendanceActivity extends AppCompatActivity {
 
         initComponent();
 
+        getStatusAbsen();
+
         disableBTNMasuk();
         disableBTNPulang();
 
@@ -62,7 +64,7 @@ public class AttendanceActivity extends AppCompatActivity {
         });
 
         //NOTED: ONLY DEBUG CODE BELOW
-        enableBTNMasuk();
+//        enableBTNMasuk();
 //        enableBTNPulang();
 
         btnMasuk.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +127,8 @@ public class AttendanceActivity extends AppCompatActivity {
         jamPulang.set(Calendar.SECOND,0);
 
         currentTime = Calendar.getInstance().getTime();
+
+        Log.d("currentTime", currentTime.toString());
 
 
         if (currentTime.before(jamMasuk.getTime())) {
