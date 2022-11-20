@@ -69,7 +69,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
                     } catch(Exception ex) {}
 
-                    if(gps_enabled && network_enabled) {
+//                    if(gps_enabled && network_enabled) {
+//                        myIntent = new Intent(MainActivity.this, AttendanceActivity.class);
+//                        startActivity(myIntent);
+//                    } else {
+//                        Toast.makeText(MainActivity.this, "Mohon aktifkan internet dan GPS ", Toast.LENGTH_SHORT).show();
+//                    }
+
+                    if(gps_enabled) {
                         myIntent = new Intent(MainActivity.this, AttendanceActivity.class);
                         startActivity(myIntent);
                     } else {

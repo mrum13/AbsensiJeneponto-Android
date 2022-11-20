@@ -1,6 +1,7 @@
 package com.example.absensijeneponto;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,7 +29,7 @@ public class AccountFragment extends Fragment {
 
     TextView tvNama, tvJabatan;
     String token;
-    ConstraintLayout lytRegistFace, lytReport;
+    ConstraintLayout lytRegistFace, lytReport, lytReportTpp;
     Button btnLogout;
 
     @Override
@@ -39,6 +40,14 @@ public class AccountFragment extends Fragment {
         initComponent(view);
 
         token = Preferences.getToken(getContext());
+
+        lytReportTpp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.absensi-dinkes.my.id/login"));
+                startActivity(browserIntent);
+            }
+        });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,5 +110,6 @@ public class AccountFragment extends Fragment {
         lytRegistFace = view.findViewById(R.id.layout_option_account2);
         lytReport = view.findViewById(R.id.layout_option_account4);
         btnLogout = view.findViewById(R.id.btn_logout);
+        lytReportTpp = view.findViewById(R.id.layout_option_account7);
     }
 }
