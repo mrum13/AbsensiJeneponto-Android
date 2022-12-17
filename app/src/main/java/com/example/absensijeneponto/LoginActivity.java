@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         isMockSettingsON(this);
         areThereMockPermissionApps(this);
 
+        //check if developer mode activated, return 1 if active, return 0 if non-active
         int adb = Settings.Secure.getInt(this.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
 

@@ -146,7 +146,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
     boolean start=true,flipX=false;
     private String nameUser;
     private String faceChar;
-    private boolean kiri = false, kanan = false;
+    private boolean kiri = false, kanan = false, firstValidationFace = false, secondValidationFace = false;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -154,6 +154,8 @@ public class AttendanceActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance2);
         initComponent();
+
+        btnAbsen.setText("Kedipkan mata perlahan untuk absen");
 
         token = Preferences.getToken(AttendanceActivity2.this);
 
@@ -350,6 +352,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
         return nv21;
     }
 
+    //looping face with realtime
     private Pair<String, Float> findNearest(float[] emb) {
 
         Pair<String, Float> ret = null;
@@ -375,7 +378,6 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void recognizeImage(final Bitmap bitmap) {
-        System.out.print("jalankan method recognizeImage AttAct");
 
         ByteBuffer imgData = ByteBuffer.allocateDirect(1 * inputSize * inputSize * 3 * 4);
 
@@ -421,17 +423,23 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
         //Compare new face with saved Faces.
         if (registered.size() > 0) {
-
             final Pair<String, Float> nearest = findNearest(embeddings[0]);//Find closest matching face
 
             if (nearest != null) {
                 final String name = nearest.first;
                 distance = nearest.second;
 
-                if(distance<0.800f) //If distance between Closest found face is more than 1.000 ,then output UNKNOWN face.
+                Log.d("AccurateFace", "Loss Value: "+distance);
+                Log.d("AccurateFace", "Name Value: "+name);
+                Log.d("NearestFace", "Nearest Face Value: "+nearest);
+
+                if(distance<=0.950f) //If distance between Closest found face is more than 0.900 ,then output UNKNOWN face.
                 {
+                    firstValidationFace = true;
                     tvNamePegawaiAttendance.setText(namaPegawai);
                     imgCheckName.setImageResource(R.drawable.ic_check);
+
+                    Log.d("FirstValidation", "First Validation Face: "+firstValidationFace);
                     if((idJenisAbsen.equals("3") || idJenisAbsen.equals("8") || idJenisAbsen.equals("7")) && (tvLocationAttendance.getText().equals("Anda telah di area kerja")) && (kiri==true) && (kanan==true)) {
                         enableButton();
                     } else if((tvLocationAttendance.getText().equals("Anda telah di area kerja")) && (idJenisAbsen.equals("10") || idJenisAbsen.equals("5"))) {
@@ -449,10 +457,12 @@ public class AttendanceActivity2 extends AppCompatActivity {
                     imgCheckName.setImageResource(R.drawable.ic_failed);
                     tvNamePegawaiAttendance.setText("Wajah tidak dikenal");
                     disableButton();
+
+
                 }
                 System.out.println("nearest: " + name + " - distance: " + distance);
             } else {
-                System.out.println("nearest = null");
+                Log.d("NearestFace", "Nearest Face Value: "+nearest);
             }
         }
     }
@@ -491,7 +501,6 @@ public class AttendanceActivity2 extends AppCompatActivity {
     }
 
     private static Bitmap getCropBitmapByCPU(Bitmap source, RectF cropRectF) {
-        System.out.println("jalankan method getCrop AttAct");
         Bitmap resultBitmap = Bitmap.createBitmap((int) cropRectF.width(),
                 (int) cropRectF.height(), Bitmap.Config.ARGB_8888);
         Canvas cavas = new Canvas(resultBitmap);
@@ -563,7 +572,6 @@ public class AttendanceActivity2 extends AppCompatActivity {
                     System.out.println("Rotation "+imageProxy.getImageInfo().getRotationDegrees());
                 }
 
-                System.out.println("ANALYSIS");
 
                 //Process acquired image to detect faces
                 Task<List<Face>> result =
@@ -576,8 +584,6 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
                                                 if(faces.size()!=0) {
                                                     Face face = faces.get(0); //Get first face from detected faces
-                                                    System.out.println("facenya=");
-                                                    System.out.println(face);
 
                                                     //mediaImage to Bitmap
                                                     Bitmap frame_bmp = toBitmap(mediaImage);
@@ -591,12 +597,28 @@ public class AttendanceActivity2 extends AppCompatActivity {
                                                     RectF boundingBox = new RectF(face.getBoundingBox());
 
                                                     float rotY = face.getHeadEulerAngleY();
+                                                    float smileDetect = face.getSmilingProbability();
+                                                    float leftEye = face.getLeftEyeOpenProbability();
+                                                    float rightEye = face.getRightEyeOpenProbability();
 
-                                                    if (rotY>=40.0) {
-                                                        kiri=true;
+                                                    Log.d("Eye", "Eye Value Left: "+leftEye+" | Eye Value Right: "+rightEye);
+
+                                                    if (rotY>=25.0) { //wajah menghadap kiri
+                                                        if (!firstValidationFace) {
+                                                            Toast.makeText(AttendanceActivity2.this, "Wajah kiri tidak sesuai", Toast.LENGTH_LONG).show();
+                                                            kiri=false;
+                                                        }else {
+                                                            kiri=true;
+                                                        }
+
                                                     }
-                                                    if (rotY<=-40.0) {
-                                                        kanan=true;
+                                                    if (rotY<=-25.0) { //wajah menghadap kanan
+                                                        if (!firstValidationFace) {
+                                                            Toast.makeText(AttendanceActivity2.this, "Wajah kanan tidak sesuai", Toast.LENGTH_LONG).show();
+                                                            kanan=false;
+                                                        }else {
+                                                            kanan=true;
+                                                        }
                                                     }
 
                                                     if (kiri==true) {
@@ -611,10 +633,14 @@ public class AttendanceActivity2 extends AppCompatActivity {
                                                         imgCheckKanan.setImageResource(R.drawable.ic_failed);
                                                     }
 
-                                                    FaceLandmark leftEar = face.getLandmark(FaceLandmark.LEFT_EAR);
-                                                    if (leftEar != null) {
-                                                        PointF leftEarPos = leftEar.getPosition();
+                                                    if (btnAbsen.isEnabled()) {
+                                                        if(leftEye<0.1 || leftEye<0.1) {
+//                                                            btnAbsen.performClick();
+                                                            getAllDataAndPostData();
+                                                        }
                                                     }
+
+                                                    Log.d("RotateHead", "Hadap Kiri atau kanan: "+rotY);
 
                                                     //Crop out bounding box from whole Bitmap(image)
                                                     Bitmap cropped_face = getCropBitmapByCPU(frame_bmp1, boundingBox);
@@ -624,7 +650,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
                                                     //Scale the acquired Face to 112*112 which is required input for model
                                                     Bitmap scaled = getResizedBitmap(cropped_face, 112, 112);
 
-                                                    if(start)
+                                                    if(start) //start==true (if true, start to recognize image)
                                                         recognizeImage(scaled); //Send scaled bitmap to create face embeddings.
                                                     System.out.println(boundingBox);
                                                     try {
@@ -678,12 +704,13 @@ public class AttendanceActivity2 extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         //Initialize Face Detector
         FaceDetectorOptions highAccuracyOpts =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
                         .enableTracking()
                         .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
                         .build();
@@ -915,7 +942,6 @@ public class AttendanceActivity2 extends AppCompatActivity {
         showCircularProgress();
 
         String getPeriodeAbsen, getTanggalAbsen, getIdJenisAbsen, getKeteranganAbsen, getPegawaiId, getWaktuMasuk, getWaktuPulang, getFaceUser, getStatusMasuk, getStatusKeluar;
-
 
         getPeriodeAbsen = periodeFormat.format(new Date()).toLowerCase(Locale.ROOT);
         getTanggalAbsen = tanggalFormat.format(new Date());
