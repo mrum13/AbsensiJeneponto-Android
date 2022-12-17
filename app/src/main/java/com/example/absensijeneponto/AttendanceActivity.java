@@ -55,7 +55,6 @@ public class AttendanceActivity extends AppCompatActivity {
 
 //        getStatusAbsen();
 
-
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -213,7 +212,9 @@ public class AttendanceActivity extends AppCompatActivity {
             public void onResponse(Call<List<GetStatusAbsen>> call, Response<List<GetStatusAbsen>> response) {
                 List<GetStatusAbsen> getStatusAbsen = response.body();
 
+
                 if (response.isSuccessful()) {
+                    Log.d("GetStatusAbsen", getStatusAbsen.get(0).getAbsenMasuk()+" "+getStatusAbsen.get(0).getAbsenKeluar());
                     getTimeFunction(getStatusAbsen.get(0).getAbsenMasuk(), getStatusAbsen.get(0).getAbsenKeluar());
                 } else {
                     try {
@@ -221,7 +222,7 @@ public class AttendanceActivity extends AppCompatActivity {
 //                        Toast.makeText(getContext(), jobjError.getString("message"), Toast.LENGTH_LONG).show();
                         Toast.makeText(AttendanceActivity.this, "Gagal get status absen", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
-                        Toast.makeText(AttendanceActivity.this, "error catch="+e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(AttendanceActivity.this, "Error catch="+e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

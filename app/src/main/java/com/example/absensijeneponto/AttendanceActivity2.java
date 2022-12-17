@@ -428,7 +428,7 @@ public class AttendanceActivity2 extends AppCompatActivity {
                 final String name = nearest.first;
                 distance = nearest.second;
 
-                if(distance<1.000f) //If distance between Closest found face is more than 1.000 ,then output UNKNOWN face.
+                if(distance<0.800f) //If distance between Closest found face is more than 1.000 ,then output UNKNOWN face.
                 {
                     tvNamePegawaiAttendance.setText(namaPegawai);
                     imgCheckName.setImageResource(R.drawable.ic_check);
@@ -592,10 +592,10 @@ public class AttendanceActivity2 extends AppCompatActivity {
 
                                                     float rotY = face.getHeadEulerAngleY();
 
-                                                    if (rotY>=50.0) {
+                                                    if (rotY>=40.0) {
                                                         kiri=true;
                                                     }
-                                                    if (rotY<=-50.0) {
+                                                    if (rotY<=-40.0) {
                                                         kanan=true;
                                                     }
 
@@ -682,10 +682,10 @@ public class AttendanceActivity2 extends AppCompatActivity {
         FaceDetectorOptions highAccuracyOpts =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
                         .enableTracking()
-                        .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
+                        .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
                         .build();
         detector = FaceDetection.getClient(highAccuracyOpts);
 
@@ -852,19 +852,20 @@ public class AttendanceActivity2 extends AppCompatActivity {
         outLateLast3 = Calendar.getInstance();
 
         cTime = new Date();
+
         currentTimeDebug =  Calendar.getInstance();
         //NOTED: ACTIVATED ONLY ON DEBUG MODE CODE BELOW to set time
-        currentTimeDebug.setTime(cTime);
-        currentTimeDebug.set(Calendar.HOUR_OF_DAY, 16);
-        currentTimeDebug.set(Calendar.MINUTE,30);
-        currentTimeDebug.set(Calendar.SECOND,0);
+//        currentTimeDebug.setTime(cTime);
+//        currentTimeDebug.set(Calendar.HOUR_OF_DAY, 16);
+//        currentTimeDebug.set(Calendar.MINUTE,30);
+//        currentTimeDebug.set(Calendar.SECOND,0);
 
         currentTimeDebugMasuk =  Calendar.getInstance();
         //NOTED: ACTIVATED ONLY ON DEBUG MODE CODE BELOW to set time
-        currentTimeDebugMasuk.setTime(cTime);
-        currentTimeDebugMasuk.set(Calendar.HOUR_OF_DAY, 7);
-        currentTimeDebugMasuk.set(Calendar.MINUTE,30);
-        currentTimeDebugMasuk.set(Calendar.SECOND,0);
+//        currentTimeDebugMasuk.setTime(cTime);
+//        currentTimeDebugMasuk.set(Calendar.HOUR_OF_DAY, 7);
+//        currentTimeDebugMasuk.set(Calendar.MINUTE,30);
+//        currentTimeDebugMasuk.set(Calendar.SECOND,0);
 
         batasAbsenMasuk();
         batasAbsenPulang();

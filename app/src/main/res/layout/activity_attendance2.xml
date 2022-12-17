@@ -36,29 +36,41 @@
     <ScrollView
         app:layout_constraintTop_toBottomOf="@id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-
-            <FrameLayout
-                app:layout_constraintCircleRadius="8dp"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+            <androidx.cardview.widget.CardView
+                android:layout_marginTop="80dp"
                 android:id="@+id/layout_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="8dp">
+                app:cardCornerRadius="100dp">
 
-                <androidx.camera.view.PreviewView
-                    android:id="@+id/camera_selfie"
+                <FrameLayout
                     android:layout_width="200dp"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:id="@+id/layout_camera2"
 
-            </FrameLayout>
+                    android:layout_marginTop="8dp">
+
+                    <androidx.camera.view.PreviewView
+                        android:id="@+id/camera_selfie"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent" />
+
+                </FrameLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
 
 <!--            <TextView-->
 <!--                android:layout_width="wrap_content"-->
@@ -327,31 +339,34 @@
 
             </RadioGroup>
 
+            <Button
+                android:id="@+id/btn_attendance"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/edit_text_app"
+                app:layout_constraintTop_toBottomOf="@id/radio_group1"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="20dp"
+                android:text="@string/attendance"
+                android:textAllCaps="false"
+                android:fontFamily="@font/poppins_semibold"/>
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/circular_progress"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:indeterminate="true"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/btn_attendance"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:background="@drawable/edit_text_app"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
-        android:layout_marginHorizontal="20dp"
-        android:text="@string/attendance"
-        android:textAllCaps="false"
-        android:fontFamily="@font/poppins_semibold"/>
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/circular_progress"
-        android:layout_width="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:indeterminate="true"/>
 
 
 

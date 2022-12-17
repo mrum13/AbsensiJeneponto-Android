@@ -1,8 +1,13 @@
 package com.example.absensijeneponto;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -31,6 +36,7 @@ public class HomeFragment extends Fragment {
     Button btnAbsenHome;
     String token, absenMasuk, absenKeluar;
     int kondisiAbsen;
+    Intent myIntent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +52,15 @@ public class HomeFragment extends Fragment {
 
         getUser();
         getStatusAbsen();
+
+
+        btnAbsenHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myIntent = new Intent(getContext(), AttendanceActivity.class);
+                startActivity(myIntent);
+            }
+        });
 
         return view;
     }
@@ -63,6 +78,7 @@ public class HomeFragment extends Fragment {
         Call<List<GetStatusAbsen>> call= RetrofitClient.getApi().getStatusAbsen("Bearer "+token);
 
         call.enqueue(new Callback<List<GetStatusAbsen>>() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onResponse(Call<List<GetStatusAbsen>> call, Response<List<GetStatusAbsen>> response) {
                 List<GetStatusAbsen> getStatusAbsen = response.body();
@@ -88,15 +104,27 @@ public class HomeFragment extends Fragment {
                     if (kondisiAbsen==0) {
                         tvAbsenMasuk.setText("Belum absen !");
                         tvAbsenPulang.setText("Belum absen !");
+
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.red));
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.red));
                     } else if (kondisiAbsen==1) {
                         tvAbsenMasuk.setText("Sudah absen");
                         tvAbsenPulang.setText("Belum absen !");
+
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.green));
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.red));
                     } else if (kondisiAbsen==2) {
                         tvAbsenMasuk.setText("Sudah absen");
                         tvAbsenPulang.setText("Sudah absen");
+
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.green));
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.green));
                     } else {
                         tvAbsenMasuk.setText("-");
                         tvAbsenPulang.setText("-");
+
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.grey));
+                        tvAbsenMasuk.setTextColor(getResources().getColor(R.color.grey));
                     }
                 } else {
                     try {

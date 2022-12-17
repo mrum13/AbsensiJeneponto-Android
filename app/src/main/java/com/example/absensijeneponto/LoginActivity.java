@@ -1,14 +1,23 @@
 package com.example.absensijeneponto;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.absensijeneponto.api.RetrofitClient;
@@ -31,9 +40,15 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etNip;
     private EditText etPassword;
     private CircularProgressIndicator circularProgressIndicator;
+    private boolean accessAttendance;
+    private CardView cardFakeGPS;
+    private TextView tvCardFake;
 
     private String nip;
     private String pass;
+
+    private String fake1;
+    private String fake2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +58,90 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         etNip = findViewById(R.id.et_nip);
         etPassword = findViewById(R.id.et_pass);
+        cardFakeGPS = findViewById(R.id.card_fake_gps);
         circularProgressIndicator = findViewById(R.id.circular_progress);
+        tvCardFake = findViewById(R.id.tv_card_fake);
 
+        fake1 = "Hapus aplikasi terkait fake gps !";
+        fake2 = "Matikan Opsi Pengembang atau Developer Mode !";
+
+        cardFakeGPS.setVisibility(View.GONE);
+
+        //LocationManager
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        //cek mock dan app menggunakan mock
+        isMockSettingsON(this);
+        areThereMockPermissionApps(this);
+
+        int adb = Settings.Secure.getInt(this.getContentResolver(),
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
+
+
+
+        try {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                ActivityCompat.requestPermissions(LoginActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+                Toast.makeText(LoginActivity.this, "Mohon Aktifkan GPS Anda !", Toast.LENGTH_SHORT).show();
+                accessAttendance = false;
+            } else {
+                accessAttendance =true;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        if (accessAttendance==true) {
+            boolean gps_enabled = false;
+            boolean network_enabled = false;
+
+            try {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch(Exception ex) {}
+
+            try {
+                network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch(Exception ex) {}
+
+            if(gps_enabled && network_enabled) {
+                if(isMockSettingsON(LoginActivity.this)==true && areThereMockPermissionApps(LoginActivity.this)==true) {
+//                    loadingLayout.setVisibility(View.GONE);
+                    btnLogin.setEnabled(false);
+                    cardFakeGPS.setVisibility(View.VISIBLE);
+                    tvCardFake.setText(fake1);
+                } else if (isMockSettingsON(LoginActivity.this)==true && areThereMockPermissionApps(LoginActivity.this)==false){
+//                    loadingLayout.setVisibility(View.GONE);
+                    btnLogin.setEnabled(false);
+                    cardFakeGPS.setVisibility(View.VISIBLE);
+                    tvCardFake.setText(fake1);
+                } else if (isMockSettingsON(LoginActivity.this)==false && areThereMockPermissionApps(LoginActivity.this)==true) {
+//                    loadingLayout.setVisibility(View.GONE);
+                    btnLogin.setEnabled(false);
+                    cardFakeGPS.setVisibility(View.VISIBLE);
+                    tvCardFake.setText(fake1);
+                } else {
+                    if (adb==1) {
+                        btnLogin.setEnabled(false);
+                        cardFakeGPS.setVisibility(View.VISIBLE);
+                        tvCardFake.setText(fake2);
+                    }else {
+                        cardFakeGPS.setVisibility(View.GONE);
+                        tvCardFake.setText(fake1);
+                    }
+                }
+            } else {
+                Toast.makeText(LoginActivity.this, "Mohon aktifkan internet dan GPS ", Toast.LENGTH_SHORT).show();
+//                loadingLayout.setVisibility(View.GONE);
+            }
+
+            if(gps_enabled) {
+//                myIntent = new Intent(MainActivity.this, AttendanceActivity.class);
+//                startActivity(myIntent);
+            } else {
+                Toast.makeText(LoginActivity.this, "Mohon aktifkan internet dan GPS ", Toast.LENGTH_SHORT).show();
+            }
+        }
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +197,63 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    //mengecek apakah settingan MOCK aktif atau tidak
+    public static boolean isMockSettingsON(Context context) {
+        // returns true if mock location enabled, false if not enabled.
+        if (Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
+            return false;
+        else
+            return true;
+    }
+
+    public static boolean areThereMockPermissionApps(Context context) {
+        int count = 0;
+
+        PackageManager pm = context.getPackageManager();
+        List<ApplicationInfo> packages =
+                pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+        for (ApplicationInfo applicationInfo : packages) {
+            try {
+                PackageInfo packageInfo = pm.getPackageInfo(applicationInfo.packageName,
+                        PackageManager.GET_PERMISSIONS);
+
+                // Get Permissions
+                String[] requestedPermissions = packageInfo.requestedPermissions;
+
+                if (requestedPermissions != null) {
+                    for (int i = 0; i < requestedPermissions.length; i++) {
+                        if (requestedPermissions[i].equals("android.permission.ACCESS_MOCK_LOCATION")) {
+                            if (applicationInfo.packageName.contains("fake")
+                                    || applicationInfo.packageName.contains("gps")
+                                    || applicationInfo.packageName.contains("maps")
+                                    || applicationInfo.packageName.contains("earth")
+                                    || applicationInfo.packageName.contains("spoof")
+                                    || applicationInfo.packageName.contains("mock")
+                                    || applicationInfo.packageName.contains("location")
+                                    || applicationInfo.packageName.contains("change")
+                                    || applicationInfo.packageName.contains("track")
+                                    || applicationInfo.packageName.contains("log")
+                                    || applicationInfo.packageName.contains("root")
+                            ) {
+                                count++;
+                            } else {
+
+                            }
+                        }
+                    }
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e("Got exception " , e.getMessage());
+            }
+        }
+
+        if (count > 0)
+            return true;
+        return false;
     }
 
     void buttonLoading() {
