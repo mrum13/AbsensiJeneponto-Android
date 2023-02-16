@@ -26,6 +26,14 @@
         app:layout_constraintLeft_toRightOf="@id/img_back"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Absen masuk paling lambat pukul 10:00 WITA !"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_absen_masuk"
+        android:layout_marginBottom="24dp"/>
+
     <Button
         android:id="@+id/btn_absen_masuk"
         android:layout_width="0dp"
@@ -50,5 +58,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_absen_masuk" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Absen pulang paling cepat pukul 14:00 WITA !"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_absen_pulang"
+        android:layout_marginBottom="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

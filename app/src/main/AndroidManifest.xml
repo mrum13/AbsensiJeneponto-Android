@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.absensijeneponto">
+    package="com.rum.absensijeneponto">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,28 +16,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AbsensiJeneponto">
         <activity
-            android:name=".WebviewReportActivity"
+            android:name="com.rum.absensijeneponto.WebviewReportActivity"
             android:exported="false" />
         <activity
-            android:name=".ReportActivity"
+            android:name="com.rum.absensijeneponto.ReportActivity"
             android:exported="false" />
         <activity
-            android:name=".RegistFaceActivity"
+            android:name="com.rum.absensijeneponto.RegistFaceActivity"
             android:exported="false" />
         <activity
-            android:name=".AttendanceActivity2"
+            android:name="com.rum.absensijeneponto.AttendanceActivity2"
             android:exported="false" />
         <activity
-            android:name=".AttendanceActivity"
+            android:name="com.rum.absensijeneponto.AttendanceActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.rum.absensijeneponto.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.rum.absensijeneponto.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name="com.rum.absensijeneponto.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
